@@ -1,6 +1,3 @@
-
-
-
 async function getGameList() {
 
     const data = await getRequest(`${URL}/gameTypes/gamelist`, `GET`);
@@ -26,10 +23,12 @@ async function displayGameList() {
         card.classList = "col-4 mb-2";
         card.innerHTML = `
      
-        <div class="card text-center py-4"> 
+        <div class="card bg-white text-center py-4" id= '${game._id}'> 
         <a href="javascript:getGame('${game._id}', '${gameName}')"> ${game.name}</a> 
+        
         </div>       
      `;
+    
 
         row.appendChild(card);
 
@@ -41,11 +40,26 @@ async function displayGameList() {
 async function getGame(gameid, gameName) {
 
     document.getElementById('gameName').innerHTML = `${gameName}`;
-    document.getElementById('gameModal').innerHTML = `<a href="javascript:startGame('${gameid}')"> Start </a>`;
+    myModal = document.getElementById('gameModal').innerHTML = `<a href="javascript:startGame('${gameid}') "> Start </a>`;
+  
+  
+}
+
+
+function changeColor(gameid) {
+
+    const myDiv = document.getElementById(gameid)
+
+    // Remove the class
+    myDiv.classList.remove("bg-white");
+
+    // Add the new class
+    myDiv.classList.add("bg-success");
+   
+    getGameActive(gameid)
 
 
 }
-
 
 
 async function startGame(gameId) {
@@ -56,6 +70,10 @@ async function startGame(gameId) {
         bodyInfo = { 'gameId': gameId }
         const response = await getRequest(`${URL}/time/finalcharge`, `POST`, bodyInfo);
         data = await response.json();
+
+        changeColor(gameId)
+
+
         return console.log(data);
 
     } catch {
@@ -64,22 +82,89 @@ async function startGame(gameId) {
 
 }
 
+
+
+async function getGameActive(gameId) {
+
+
+    try {
+
+        bodyInfo = { 'gameId': gameId }
+        const response = await getRequest(`${URL}/game/consulta2`, `POST`, bodyInfo);
+        data = await response.json();
+        return console.log(data);
+
+    } catch {
+
+    }
+
+}
+
+
+
+
+
+async function activeGame(chargesDetailId, gameId) {
+
+
+    try {
+
+        bodyInfo = { 'gameId': gameId }
+        const response = await getRequest(`${URL}/time/finalcharge`, `POST`, bodyInfo);
+        data = await response.json();
+
+        changeColor(gameId)
+
+
+        return console.log(data);
+
+    } catch {
+
+    }
+
+}
+
+
+
+
 displayGameList()
 
-//CREAR EL MODAL EN HTML (COPIAR Y PEGAR DESDE LA DOCUMENTACION):
-    //A. COLOCARLE ALGUN IDENTIFICADOR A LA ETIQUETA DEL NOMBRE, ID UNICO, CLASE, ETC
-    //B. COLOCARLE IDENTIFICADOR A ALGUN DIV
-
-//AL DAR CLICK A LA MESA, LLAMAR UNA FUNCIÓN QUE RECIBA DOS PARAMETROS: GAMEID Y GAMENAME
-    //A. LA FUNCION VA A LLAMAR EL IDENTIFICADOR DE LA ETIQUETA DEL NOMBRE Y PONERLE EL NOMBRE DEL JUEGO SELECCIONADO
-    //B. AL DIV VACIO, LE VAS A COLOCAR UN INNERHTML CON UN BOTON QUE DIGA "START" Y QUE LLAME LA FUNCION STARTGAME
-
-//ABRIR EL MODAL
 
 
 
 
 
 
-       // <a href="javascript:startGame('${game._id}')"> ${game.name}</a> 
 
+// Get the div element by its ID
+const myDiv = document.getElementById("mydiv");
+
+// Add a click event listener to the div element
+myDiv.addEventListener("click", function () {
+    // Change the background color of the div when it's clicked
+    myDiv.innerHTML = `
+     
+  <div class="card bg-black text-center py-4"> 
+
+  </div>       
+
+// `
+
+    // Save the change to local storage
+    localStorage.setItem('myChange', 'Your changed value');
+
+    // Retrieve the change from local storage
+    const myChange = localStorage.getItem('myChange');
+    console.log(myChange); // Output: Your changed value
+
+
+
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+
+
+});
