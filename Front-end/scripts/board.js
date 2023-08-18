@@ -1,34 +1,33 @@
+
+
+
+// GET LIST OF GAMES
 async function getGameList() {
 
-    const data = await getRequest(`${URL}/gameTypes/gamelist`, `GET`);
+    const data = await getRequest(`${URL}/games/list`, `GET`);
 
     return await data.json()
 
 }
 
-
-console.log(getGameList())
-
-
-
+// DISPLAY ALL THE GAMES IN SCREN
 async function displayGameList() {
 
     games = await getGameList()
-    console.log(games)
+    //console.log(games)
     games.forEach(game => {
         let gameName = game.name
 
         const row = document.getElementById('row');
         card = document.createElement('div');
         card.classList = "col-4 mb-2";
-        card.innerHTML = `
-     
+        card.innerHTML = `      
         <div class="card bg-white text-center py-4" id= '${game._id}'> 
         <a href="javascript:getGame('${game._id}', '${gameName}')"> ${game.name}</a> 
         
         </div>       
      `;
-    
+         verifyGameActive(game._id)
 
         row.appendChild(card);
 
@@ -36,6 +35,18 @@ async function displayGameList() {
     });
 }
 
+
+// VERIFY GAMES ACTIVE
+
+async function verifyGameActive(gameid) {
+
+   getGameActive(gameid)
+  
+}
+
+
+
+// GET THE GAME STARTED 
 
 async function getGame(gameid, gameName) {
 
@@ -45,6 +56,7 @@ async function getGame(gameid, gameName) {
   
 }
 
+// CHANGE GAME COLOR
 
 function changeColor(gameid) {
 
@@ -56,23 +68,20 @@ function changeColor(gameid) {
     // Add the new class
     myDiv.classList.add("bg-success");
    
-    getGameActive(gameid)
+ 
 
 
 }
 
-
+// START GAME
 async function startGame(gameId) {
-
-
     try {
 
         bodyInfo = { 'gameId': gameId }
-        const response = await getRequest(`${URL}/time/finalcharge`, `POST`, bodyInfo);
+        const response = await getRequest(`${URL}/game/start-game`, `POST`, bodyInfo);
         data = await response.json();
 
         changeColor(gameId)
-
 
         return console.log(data);
 
@@ -82,7 +91,7 @@ async function startGame(gameId) {
 
 }
 
-
+// GET GAME ACTIVE
 
 async function getGameActive(gameId) {
 
@@ -90,9 +99,17 @@ async function getGameActive(gameId) {
     try {
 
         bodyInfo = { 'gameId': gameId }
-        const response = await getRequest(`${URL}/game/consulta2`, `POST`, bodyInfo);
+        const response = await getRequest(`${URL}/game/game-active`, `POST`, bodyInfo);
         data = await response.json();
-        return console.log(data);
+        if (response.ok) {
+            changeColor(gameId) 
+        }else {
+            console.log(response);
+            console.log(data);}
+
+
+  
+       //return console.log(data)
 
     } catch {
 
@@ -101,28 +118,6 @@ async function getGameActive(gameId) {
 }
 
 
-
-
-
-async function activeGame(chargesDetailId, gameId) {
-
-
-    try {
-
-        bodyInfo = { 'gameId': gameId }
-        const response = await getRequest(`${URL}/time/finalcharge`, `POST`, bodyInfo);
-        data = await response.json();
-
-        changeColor(gameId)
-
-
-        return console.log(data);
-
-    } catch {
-
-    }
-
-}
 
 
 
@@ -161,10 +156,3 @@ myDiv.addEventListener("click", function () {
 
 });
 
-
-
-document.addEventListener('DOMContentLoaded', function() {
-
-
-
-});

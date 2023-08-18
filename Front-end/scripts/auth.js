@@ -3,7 +3,7 @@
 
 async function getUserList() {
 
-  data = await getRequest(`${URL}/users`, `GET`);
+  data = await getRequest(`${URL}/user/list`, `GET`);
   console.log(data)
 }
 
@@ -59,16 +59,6 @@ loginForm.addEventListener('submit', async (e) => {
 });
 
 
-// JSON.stringify({ 'greetings': 'hello'})
-// whatever = { 'greetings': 'hello'};
-// JSON.stringify(whatever)
-
-
-//NEXT
-      //Guardar TOKEN, EMAIL IN LOCAL STORAGE
-      // REDIRECIONAR A OTRA PAGINA SI INICIO SESION
-      //LIMPIAR EL CODIGO
-      // MOSTRAR EN PANTALLA LAS MESAS EN LA NUEVA PAGINA 
 
 
       
