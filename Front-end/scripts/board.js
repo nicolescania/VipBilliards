@@ -17,19 +17,24 @@ async function getGameList() {
 async function displayGameList() {
 
     games = await getGameList()
-    //console.log(games)
+
     games.forEach(async (game) => {
-        console.log(game)
+
         let gameName = game.name
+
+        //const data = await getGameActive(game._id)
+        //    console.log(data.status)
 
 
 
         const row = document.getElementById('row');
         card = document.createElement('div');
         card.classList = "col-4 mb-2";
+
         card.innerHTML = `      
-        <div class="card bg-body-secondary text-center py-4 m-2" id= '${game._id}'> 
-        <a  class="text-decoration-none text-dark fs-1 fw-bold p-2 m-2 "  id= '${gameName}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName} </a>
+        <div class="card bg-body-secondary text-center  " id= '${game._id}'> 
+        <a  class="text-decoration-none text-dark fs-1 fw-bold gamesNumbers  text-center card-text p-4"  id= '${gameName}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName}   </a>
+       
    
         
         </div>       
@@ -37,6 +42,7 @@ async function displayGameList() {
         verifyGameActive(game._id)
 
         row.appendChild(card);
+
 
     });
 }
@@ -97,45 +103,141 @@ async function getGameActive(gameId) {
 function showModal() {
     var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
     modal.show();
-    
+
 }
 
+function hideModal() {
+    var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
 
+    modal.hide();
+}
 
-
+//
 
 
 // GET THE GAME STARTED 
 async function getGame(gameid, gameName) {
- 
+
     showModal()
-    document.getElementById('gameName').innerHTML = `${gameName}`;
 
     const data = await getGameActive(gameid)
-    console.log(data)
-    if (data) {
-        document.getElementById('gameInfo').innerHTML = `<p>Table '${gameName}'  '${data.status}'.</p>
-        <p>Time Started '${data.timeStarted}' .</p>
-        <p> payment '${data.payment}' .</p>
+ 
+    
+   if (data.status == 'AVAILABLE') {
+     
+       myModal= document.getElementById('modalButtons').innerHTML = `<a class= "bg-info text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:startGame('${gameid}') "> Start </a>`;
+
+       document.getElementById('gameName').innerHTML = `
+        
+       <div class="row">
+       <div class="col-6">
+             <p class="fs-3 fw-bold"> Table ${gameName}</p>
+       </div>
+       <div class="col-6">
+             <p class="fs-3 ">  ${data.status}</p>
+       </div>
+     
+     </div>
+       
+  
+       
+       `
+
+    } if (data.status == 'ON HOLD') {
+        myModal = document.getElementById('modalButtons').innerHTML = `<a class= "bg-info text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:resumeGame('${gameid}') "> Resume </a>`;
+
+        document.getElementById('gameName').innerHTML = `
+        
+        <div class="row">
+        <div class="col-6">
+              <p class="fs-3 fw-bold"> Table ${gameName}</p>
+        </div>
+        <div class="col-6">
+              <p class="fs-3 text-warning">  ${data.status}</p>
+        </div>
+      
+      </div>
+       
+        
+        `
+ 
+    } if (data.status == 'TAKEN') {
+        myModal = document.getElementById('modalButtons').innerHTML = `
+        <a class= "bg-warning text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:holdGame('${gameid}') "> Hold </a>
+        <a class= "bg-dark-subtle text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:TransferModal('${gameid}') "> Transfer </a>
+         <a class= "bg-danger text-decoration-none text-white py-2 px-4 m-2 rounded-3" href="javascript:closeGame('${gameid}') "> Stop </a>
+         
+         `
+         document.getElementById('gameName').innerHTML = `
+        
+         <div class="row">
+         <div class="col-6">
+               <p class="fs-3 fw-bold"> Table ${gameName}</p>
+         </div>
+         <div class="col-6">
+               <p class="fs-3 text-info">  ${data.status}</p>
+         </div>
+       
+       </div>
+        
+         
+         `
+         document.getElementById('gameInfo').innerHTML = `
+         
+         <div class="row">
+
+         <div class="col">
+         <p class="text-left mx-5 fw-bold" >Time Started:    </p>
+         </div>
+
+         <div class="col">
+         <p class="text-right mx-2 fw-bold" >   ${data.timeStarted} </p>
+         </div>
+
+       </div>
+
+       <div class="row">
+         
+       <div class="col mx-2">
+       <p class="text-left mx-5 fw-bold">Payment</p>
+       </div>
+
+       <div class="col mx-2">
+       <p class="text-right text-center mx-5 fw-bold">CAD$${data.payment} </p>
+       </div>
+
+     </div>
+         
+         
         `;
+ 
+ 
+    }
+
+    if (showModal() == true)
+    {
+        hideModal()
+
     }
 
 
-    myModal = document.getElementById('gameModal').innerHTML = `<a href="javascript:startGame('${gameid}') "> Start </a>`;
-    myModal = document.getElementById('holdButtonModal').innerHTML = `<a href="javascript:holdGame('${gameid}') "> Hold </a>`;
-    myModal = document.getElementById('resumeButtonModal').innerHTML = `<a href="javascript:resumeGame('${gameid}') "> Resume </a>`;
-    myModal = document.getElementById('closeButtonModal').innerHTML = `<a href="javascript:closeGame('${gameid}') "> Close </a>`;
-    myModal = document.getElementById('transferModal').innerHTML = `<a href="javascript:TransferModal('${gameid}') "> Transfer </a>`;
 
-  
+
+
 }
+
+
+
+function showStartButton(gameid) {
+    document.getElementById('startGameModal').innerHTML = `<a href="javascript:startGame('${gameid}') "> Start </a>`;
+
+}
+
 
 
 async function TransferModal(gameid) {
 
-  
 
-  
 
     var modal = new bootstrap.Modal(document.getElementById("transfermodal02"));
     modal.show();
@@ -221,7 +323,7 @@ async function startGame(gameId) {
         const response = await getRequest(`${URL}/game/start-game`, `POST`, bodyInfo);
         data = await response.json();
 
-        changeColor(gameId)
+        getGameActive(gameId)
 
         return console.log(data);
 
@@ -238,7 +340,7 @@ async function closeGame(gameId) {
         const response = await getRequest(`${URL}/game/close-game`, `delete`, bodyInfo);
         data = await response.json();
 
-        //changeColor(gameId)
+        getGameActive(gameId)
 
         return console.log(data);
 
@@ -257,13 +359,13 @@ async function holdGame(gameId) {
         bodyInfo = { 'gameId': gameId }
         const response = await getRequest(`${URL}/hold-game`, `POST`, bodyInfo);
         data = await response.json();
-
-        changeHoldColor(gameId)
+        getGameActive(gameId)
+     
 
         return console.log(data);
 
     } catch {
-
+        return console.log("hold game does not work")
     }
 
 }
@@ -276,12 +378,13 @@ async function resumeGame(gameId) {
         bodyInfo = { 'gameId': gameId }
         const response = await getRequest(`${URL}/resume-game`, `POST`, bodyInfo);
         data = await response.json();
-
-        changeColor(gameId)
+        getGameActive(gameId)
+  
 
         return console.log(data);
 
     } catch {
+        return console.log("resume game does not work")
 
     }
 
@@ -297,12 +400,12 @@ async function transferGame(gameIdOld) {
         const response = await getRequest(`${URL}/game/transfer-game`, `POST`, bodyInfo);
         data = await response.json();
 
-        changeColor(gameIdNew)
+        getGameActive(gameIdNew)
 
         return console.log(data);
 
     } catch {
-       return console.log('no funciona transfer game func')
+        return console.log('no funciona transfer game func')
     }
 
 }
@@ -312,7 +415,12 @@ async function transferGame(gameIdOld) {
 
 
 
+// // Assuming you have an HTML element with an ID
+// let refreshButton = document.getElementById("mainContainer");
 
+// refreshButton.addEventListener("click", function() {
+//     location.reload(); // Reload the page
+// });
 
 
 
