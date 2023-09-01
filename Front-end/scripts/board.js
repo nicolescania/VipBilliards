@@ -22,8 +22,7 @@ async function displayGameList() {
 
         let gameName = game.name
 
-        //const data = await getGameActive(game._id)
-        //    console.log(data.status)
+        console.log(game)
 
 
 
@@ -33,18 +32,27 @@ async function displayGameList() {
 
         card.innerHTML = `      
         <div class="card bg-body-secondary text-center  " id= '${game._id}'> 
-        <a  class="text-decoration-none text-dark fs-1 fw-bold gamesNumbers  text-center card-text p-4"  id= '${gameName}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName}   </a>
-       
-   
+        <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0" style="font-size: 6.25rem"  id= 'link_container_${game._id}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName}   </a>
+        <p class="${game._id}"> </p>
+        
         
         </div>       
      `;
-        verifyGameActive(game._id)
-
         row.appendChild(card);
+        const data = await getGameActive(game._id, game.name)
+        //verifyGameActive(game._id)
+
+      // setStatus(game._id, data.status )
 
 
     });
+}
+
+function setStatus(gameId, statusName){
+
+    pStatus = document.getElementsByClassName(gameId)
+    pStatus[0].innerHTML = statusName
+
 }
 
 
@@ -60,37 +68,62 @@ async function verifyGameActive(gameid) {
 
 // GET GAME ACTIVE
 
-async function getGameActive(gameId) {
+async function getGameActive(gameId, name=null) {
+
 
     try {
 
         bodyInfo = { 'gameId': gameId }
         const response = await getRequest(`${URL}/game/game-active`, `POST`, bodyInfo);
         data = await response.json();
+       
 
         if (data.gameStatus == true) {
-            changeColor(gameId, data.game)
+            changeHoldColor2(gameId, gameId, "bg-info", "text-white")
 
-            return {
+
+            gameInfo = {
                 status: 'TAKEN',
                 isAvailable: false,
                 timeStarted: data.gameStarted,
-                payment: data.charge
+                payment: data.charge,
+                holdTimeStarted: data.holdTimeStarted,
+                timePlaying: data.timePlaying,
+                timeOnHold:data.holdTime,
+                amount: data.charge
             }
-        } if (data.gameStatus == false) {
-            changeHoldColor(gameId, data.game)
-            return {
+        }
+            
+        if (data.gameStatus == false) {
+            changeHoldColor2(gameId, gameId, "bg-warning", "text-dark")
+           
+            gameInfo = {
                 status: 'ON HOLD',
                 isAvailable: false,
                 timeStarted: data.gameStarted,
-                payment: data.charge
+                payment: data.charge,
+                holdTimeStarted: data.holdTimeStarted,
+                timePlaying: data.timePlaying,
+                timeOnHold:data.holdTime,
+                amount: data.charge
             }
         }
-        return {
-            status: 'AVAILABLE',
-            isAvailable: true,
+       
+        if(data.gameActiveExist == false){
+            changeHoldColor2(gameId, gameId, "bg-body-secondary", "text-dark")
+       
+            gameInfo = {
+            
+                status: 'AVAILABLE',
+                isAvailable: true,
 
+            }
         }
+
+
+        setStatus(gameId, gameInfo.status)
+        return gameInfo;
+        
 
     } catch {
         return "Error en el get";
@@ -124,18 +157,27 @@ async function getGame(gameid, gameName) {
  
     
    if (data.status == 'AVAILABLE') {
+    document.getElementById('gameInfo').innerHTML = ''
      
-       myModal= document.getElementById('modalButtons').innerHTML = `<a class= "bg-info text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:startGame('${gameid}') "> Start </a>`;
+       myModal= document.getElementById('modalButtons').innerHTML = `
+
+       <div class="row">
+       <div class="col">
+       <a class= "bg-success text-uppercase text-decoration-none text-white fw-bold py-2 px-5 m-2 rounded-3" href="javascript:startGame('${gameid}') "> Start </a>
+       </div>
+ 
+    
+       
+`;
 
        document.getElementById('gameName').innerHTML = `
         
-       <div class="row">
-       <div class="col-6">
-             <p class="fs-3 fw-bold"> Table ${gameName}</p>
-       </div>
-       <div class="col-6">
-             <p class="fs-3 ">  ${data.status}</p>
-       </div>
+       <div>
+       <p class=" fw-bold text-uppercase" style="font-size: 3.50rem"> Table ${gameName} <span class= "text-success"> ${data.status} </span> </p>
+
+    
+   
+   
      
      </div>
        
@@ -144,69 +186,130 @@ async function getGame(gameid, gameName) {
        `
 
     } if (data.status == 'ON HOLD') {
-        myModal = document.getElementById('modalButtons').innerHTML = `<a class= "bg-info text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:resumeGame('${gameid}') "> Resume </a>`;
+        
 
-        document.getElementById('gameName').innerHTML = `
+        document.getElementById('gameInfo').innerHTML = `
         
         <div class="row">
         <div class="col-6">
-              <p class="fs-3 fw-bold"> Table ${gameName}</p>
+        <p class="text-start fs-4 ms-5  ps-5"  >Started:  </p>
         </div>
         <div class="col-6">
-              <p class="fs-3 text-warning">  ${data.status}</p>
-        </div>
-      
-      </div>
+        <p class="text-end fs-4 me-5 pe-5  " >  ${data.timeStarted}  </p>
+
+        </div>      
+         </div>
+         <div class="row">
+         <div class="col-6">
+         <p class="text-start fs-4 ms-5  ps-5"  >Time:  </p>
+         </div>
+         <div class="col-6">
+         <p class="text-end fs-4 me-5 pe-5" >  ${data.timePlaying}  </p>
+ 
+         </div>      
+          </div>
+
+          <div class="row">
+          <div class="col-6">
+          <p class="text-start fs-4 ms-5  ps-5"  >Time on hold:  </p>
+          </div>
+          <div class="col-6">
+          <p class="text-end fs-4 me-5 pe-5" >  ${data.timeOnHold}  </p>
+  
+          </div>      
+           </div>
+   
+
+           <div class="row">
+           <div class="col-6">
+           <p class="text-start fs-4 ms-5  ps-5"  >Amount:  </p>
+           </div>
+           <div class="col-6">
+           <p class="text-end fs-4 me-5 pe-5" >  CAD${data.amount}  </p>
+   
+           </div>      
+            </div>
+        `
+
+        myModal = document.getElementById('modalButtons').innerHTML = `
+
+
+
+
+        <a class= "bg-info text-uppercase text-decoration-none text-white fw-bold btn btn-lg py-2 px-5 mx-3 rounded-3" href="javascript:resumeGame('${gameid}') "> Resume </a>
+     
+        <a class= "bg-danger text-uppercase text-decoration-none text-white fw-bold btn btn-lg py-2 px-5 mx-3 rounded-3" href="javascript:closeFreeGame('${gameid}') ">  FREE close </a>
+
+       
+
+        `;
+
+        document.getElementById('gameName').innerHTML = `
+        
+        <div>
+    
+        <p class=" fw-bold text-uppercase" style="font-size: 3.50rem"> Table ${gameName} <span class= "text-warning"> ${data.status} </span> </p>
+
+
+
+</div>
+       
        
         
         `
  
     } if (data.status == 'TAKEN') {
         myModal = document.getElementById('modalButtons').innerHTML = `
-        <a class= "bg-warning text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:holdGame('${gameid}') "> Hold </a>
-        <a class= "bg-dark-subtle text-decoration-none text-dark fw-bold py-2 px-4 m-2 rounded-3" href="javascript:TransferModal('${gameid}') "> Transfer </a>
-         <a class= "bg-danger text-decoration-none text-white py-2 px-4 m-2 rounded-3" href="javascript:closeGame('${gameid}') "> Stop </a>
+        <a class= "btn btn-lg text-uppercase bg-warning text-decoration-none text-dark fw-bold py-2 px-5 mx-4 rounded-3" href="javascript:holdGame('${gameid}') "> Hold </a>
+        <a class= "btn btn-lg text-uppercase bg-dark-subtle text-decoration-none text-dark fw-bold py-2 px-5 m-2 rounded-3" href="javascript:TransferModal('${gameid}') "> Transfer </a>
+         <a class= "btn btn-lg text-uppercase bg-danger text-decoration-none text-white py-2 px-5 m-2 rounded-3" href="javascript:closeGame('${gameid}') "> Stop </a>
          
          `
          document.getElementById('gameName').innerHTML = `
         
-         <div class="row">
-         <div class="col-6">
-               <p class="fs-3 fw-bold"> Table ${gameName}</p>
-         </div>
-         <div class="col-6">
-               <p class="fs-3 text-info">  ${data.status}</p>
-         </div>
-       
-       </div>
-        
+         <div>
+    
+         <p class=" fw-bold text-uppercase" style="font-size: 2.25rem"> Table ${gameName} <span class= "text-info"> ${data.status} </span> </p>
+
+
+ 
+ </div>
+   
+    
          
          `
+
+
          document.getElementById('gameInfo').innerHTML = `
          
          <div class="row">
+        <div class="col-6">
+        <p class="text-start fs-4 ms-5  ps-5"  >Started:  </p>
+        </div>
+        <div class="col-6">
+        <p class="text-end fs-4 me-5 pe-5  " >  ${data.timeStarted}  </p>
 
-         <div class="col">
-         <p class="text-left mx-5 fw-bold" >Time Started:    </p>
+        </div>      
          </div>
-
-         <div class="col">
-         <p class="text-right mx-2 fw-bold" >   ${data.timeStarted} </p>
+         <div class="row">
+         <div class="col-6">
+         <p class="text-start fs-4 ms-5  ps-5"  >Time:  </p>
          </div>
+         <div class="col-6">
+         <p class="text-end fs-4 me-5 pe-5" >  ${data.timePlaying}  </p>
+ 
+         </div>      
+          </div>
 
-       </div>
-
-       <div class="row">
-         
-       <div class="col mx-2">
-       <p class="text-left mx-5 fw-bold">Payment</p>
-       </div>
-
-       <div class="col mx-2">
-       <p class="text-right text-center mx-5 fw-bold">CAD$${data.payment} </p>
-       </div>
-
-     </div>
+           <div class="row">
+           <div class="col-6">
+           <p class="text-start fs-4 ms-5  ps-5"  >Amount:  </p>
+           </div>
+           <div class="col-6">
+           <p class="text-end fs-4 me-5 pe-5" >  CAD${data.amount}  </p>
+   
+           </div>      
+            </div>
          
          
         `;
@@ -315,6 +418,28 @@ function changeHoldColor(gameid, gameName) {
 }
 
 
+function changeHoldColor2(gameid, gameName, bgColor, textColor) {
+    const myDiv = document.getElementById(gameid)
+    const text = document.getElementById('link_container_'+gameName)
+
+ 
+    // Remove the class
+    myDiv.classList.remove("bg-body-secondary");
+
+    // Add the new class
+    myDiv.classList.add(bgColor);
+
+    // Remove the class
+    text.classList.remove("text-dark");
+
+    // Add the new class
+    text.classList.add(textColor);
+    
+
+
+}
+
+
 // START GAME
 async function startGame(gameId) {
     try {
@@ -332,6 +457,10 @@ async function startGame(gameId) {
     }
 
 }
+
+
+
+
 //CLOSE GAME
 async function closeGame(gameId) {
     try {
@@ -349,6 +478,26 @@ async function closeGame(gameId) {
     }
 
 }
+
+
+//FREE GAME
+async function closeFreeGame(gameId) {
+    try {
+
+        bodyInfo = { 'gameId': gameId }
+        const response = await getRequest(`${URL}/game/free-game`, `delete`, bodyInfo);
+        data = await response.json();
+
+        getGameActive(gameId)
+
+        return console.log(data);
+
+    } catch {
+
+    }
+
+}
+
 
 
 

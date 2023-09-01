@@ -1,3 +1,32 @@
-.gamesNumbers{
-    font-size: 5.5rem;
+@import url('bootstrap.min.css');
+
+
+.bg-info{
+    background: #2797bf !important;
+}
+
+.bg-warning{
+    background: #fff200 !important;
+}
+
+.bg-danger{
+    background: #ff4d4d !important;
+}
+
+.bg-body-secondary{
+    background: #ededed !important;
+}
+
+.text-warning{
+    color:  #c4bb0a !important;;
+}
+
+.bg-success{
+    background: #15b790 !important;
+
+}
+
+.text-success{
+    color:  #15b790 !important;;
+
 }
