@@ -163,7 +163,10 @@ async function getGame(gameid, gameName) {
 
        <div class="row">
        <div class="col">
+       <a class= "bg-success text-uppercase text-decoration-none text-white fw-bold py-2 px-5 m-2 rounded-3" href="javascript:startGameByMinute('${gameid}') "> Start (Min) </a>
        <a class= "bg-success text-uppercase text-decoration-none text-white fw-bold py-2 px-5 m-2 rounded-3" href="javascript:startGame('${gameid}') "> Start </a>
+
+
        </div>
  
     
@@ -458,6 +461,23 @@ async function startGame(gameId) {
 
 }
 
+// START GAME BY THE MINUTE
+async function startGameByMinute(gameId) {
+    try {
+
+        bodyInfo = { 'gameId': gameId }
+        const response = await getRequest(`${URL}/game/start-game-by-minute`, `POST`, bodyInfo);
+        data = await response.json();
+
+        getGameActive(gameId)
+
+        return console.log(data);
+
+    } catch {
+
+    }
+
+}
 
 
 
