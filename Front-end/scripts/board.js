@@ -22,24 +22,30 @@ async function displayGameList() {
 
         let gameName = game.name
 
-        console.log(game)
+        console.log(game.location)
+
+        if (game.location == '64f3c4f621bef0587507ae22')
+
+        {
+            const row = document.getElementById('row');
+            card = document.createElement('div');
+            card.classList = "col-4 mb-2";
+    
+            card.innerHTML = `      
+            <div class="card bg-body-secondary text-center  " id= '${game._id}'> 
+            <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0" style="font-size: 6.25rem"  id= 'link_container_${game._id}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName}   </a>
+            <p class="${game._id}"> </p>
+            
+            
+            </div>       
+         `;
+            row.appendChild(card);
+            const data = await getGameActive(game._id, game.name)
+
+        }
 
 
 
-        const row = document.getElementById('row');
-        card = document.createElement('div');
-        card.classList = "col-4 mb-2";
-
-        card.innerHTML = `      
-        <div class="card bg-body-secondary text-center  " id= '${game._id}'> 
-        <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0" style="font-size: 6.25rem"  id= 'link_container_${game._id}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName}   </a>
-        <p class="${game._id}"> </p>
-        
-        
-        </div>       
-     `;
-        row.appendChild(card);
-        const data = await getGameActive(game._id, game.name)
         //verifyGameActive(game._id)
 
       // setStatus(game._id, data.status )
