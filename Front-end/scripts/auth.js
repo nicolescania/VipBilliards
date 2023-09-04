@@ -2,8 +2,11 @@
 
 
 async function getUserList() {
+  //const response = await getRequest(`${URL}/user/list`, `get`, null);
 
-  data = await getRequest(`${URL}/user/list`, `GET`);
+  response = await getRequest(`${URL}/user/list`, `GET`);
+  data = await response.json();
+
   console.log(data)
 }
 
@@ -22,10 +25,18 @@ loginForm.addEventListener('submit', async (e) => {
   try {
 
     bodyInfo = { 'emailAddress': email, 'password': password }
-    const response = await getRequest(`${URL}/login`, `POST`, bodyInfo);
+    const response = await getRequest(`${URL}/user/login`, `POST`, bodyInfo);
 
     data = await response.json();
-    console.log(data);
+
+    
+    Object.values(data).forEach(user => {
+      localStorage.setItem('location', user.location._id)
+
+    });
+
+
+   // console.log(data);
 
     if (response.ok) {
       // Store the token in local storage or a cookie for future API requests
@@ -39,13 +50,21 @@ loginForm.addEventListener('submit', async (e) => {
       const storedToken = localStorage.getItem("token");
 
       // Print local storage
-      console.log("Stored Email:", storedEmail);
-      console.log("Stored Token:", storedToken);
+     // console.log("Stored Email:", storedEmail);
+     /// console.log("Stored Token:", storedToken);
 
-      alert('Login successful!');
+      //alert('Login successful!');
+
+      let peanutPlaza = '64f3c4f621bef0587507ae22'
+      let danforth = '64f3c50a21bef0587507ae24'
+      let college = '64f3c4cb21bef0587507ae20'
+
+      window.location.href = "http://127.0.0.1:5500/Front-end/views/board.html";
+
+    
+
 
       // Redirect to a new page after successful login
-    window.location.href = "http://127.0.0.1:5500/Front-end/views/board.html";
     } else {
       console.log(response);
       console.log(data);

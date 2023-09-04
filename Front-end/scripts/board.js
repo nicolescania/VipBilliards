@@ -18,49 +18,87 @@ async function displayGameList() {
 
     games = await getGameList()
 
-    games.forEach(async (game) => {
+    const storedLocation = localStorage.getItem("location");
+    console.log(storedLocation);
 
-        let gameName = game.name
 
-        console.log(game.location)
+    const location = games.filter(game => game.location === storedLocation);
 
-        if (game.location == '64f3c4f621bef0587507ae22')
+    console.log(location)
+    location.forEach(locationGame => {
+        return layaoutLocation("col-4 mb-2", locationGame._id, locationGame.name)
 
-        {
-            const row = document.getElementById('row');
-            card = document.createElement('div');
-            card.classList = "col-4 mb-2";
-    
-            card.innerHTML = `      
-            <div class="card bg-body-secondary text-center  " id= '${game._id}'> 
-            <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0" style="font-size: 6.25rem"  id= 'link_container_${game._id}' href="javascript:getGame('${game._id}', '${gameName}') "> ${gameName}   </a>
-            <p class="${game._id}"> </p>
-            
-            
-            </div>       
-         `;
-            row.appendChild(card);
-            const data = await getGameActive(game._id, game.name)
 
-        }
+    })
 
 
 
-        //verifyGameActive(game._id)
-
-      // setStatus(game._id, data.status )
 
 
-    });
+    // if (storedLocation == 'Peanut Plaza') {
+
+    //     const peanutPlaza = games.filter(game => game.location === 'peaunutPlaza');
+    //     peanutPlaza.forEach(peanutPlazaGame => {
+    //         return layaoutLocation("col-4 mb-2", peanutPlazaGame._id, peanutPlazaGame.name)
+
+
+    //     })
+    // } if (storedLocation == 'Danforth') {
+    //     const danforth = games.filter(game => game.location === '64f3c50a21bef0587507ae24');
+    //     danforth.forEach(danforthGame => {
+    //         console.log(danforthGame)
+    //         return layaoutLocation("col-3 mb-2", danforthGame._id, danforthGame.name)
+
+
+    //     })
+
+
+    // } if (storedLocation == 'college') {
+
+    //     const college = games.filter(game => game.location === '64f3c4cb21bef0587507ae20');
+    //     college.forEach(collegeGame => {
+    //         return layaoutLocation("col-4 mb-2", collegeGame._id, collegeGame.name)
+
+    //     })
+
+
+
+    // }
+
+
+    //verifyGameActive(game._id)
+
+    // setStatus(game._id, data.status )
+
+
+    // });
 }
 
-function setStatus(gameId, statusName){
+function setStatus(gameId, statusName) {
 
     pStatus = document.getElementsByClassName(gameId)
     pStatus[0].innerHTML = statusName
 
 }
 
+
+
+async function layaoutLocation(cardClassList, gameid, gameName) {
+    const row = document.getElementById('row');
+    card = document.createElement('div');
+    card.classList = cardClassList;
+
+    card.innerHTML = `      
+    <div class="card bg-body-secondary text-center  " id= '${gameid}'> 
+    <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0" style="font-size: 6.25rem"  id= 'link_container_${gameid}' href="javascript:getGame('${gameid}', '${gameName}') "> ${gameName}   </a>
+    <p class="${gameid}"> </p>
+    
+    
+    </div>       
+ `;
+    row.appendChild(card);
+    const data = await getGameActive(gameid, gameName)
+}
 
 
 // VERIFY GAMES ACTIVE
@@ -74,7 +112,7 @@ async function verifyGameActive(gameid) {
 
 // GET GAME ACTIVE
 
-async function getGameActive(gameId, name=null) {
+async function getGameActive(gameId, name = null) {
 
 
     try {
@@ -82,7 +120,7 @@ async function getGameActive(gameId, name=null) {
         bodyInfo = { 'gameId': gameId }
         const response = await getRequest(`${URL}/game/game-active`, `POST`, bodyInfo);
         data = await response.json();
-       
+
 
         if (data.gameStatus == true) {
             changeHoldColor2(gameId, gameId, "bg-info", "text-white")
@@ -95,14 +133,14 @@ async function getGameActive(gameId, name=null) {
                 payment: data.charge,
                 holdTimeStarted: data.holdTimeStarted,
                 timePlaying: data.timePlaying,
-                timeOnHold:data.holdTime,
+                timeOnHold: data.holdTime,
                 amount: data.charge
             }
         }
-            
+
         if (data.gameStatus == false) {
             changeHoldColor2(gameId, gameId, "bg-warning", "text-dark")
-           
+
             gameInfo = {
                 status: 'ON HOLD',
                 isAvailable: false,
@@ -110,16 +148,16 @@ async function getGameActive(gameId, name=null) {
                 payment: data.charge,
                 holdTimeStarted: data.holdTimeStarted,
                 timePlaying: data.timePlaying,
-                timeOnHold:data.holdTime,
+                timeOnHold: data.holdTime,
                 amount: data.charge
             }
         }
-       
-        if(data.gameActiveExist == false){
+
+        if (data.gameActiveExist == false) {
             changeHoldColor2(gameId, gameId, "bg-body-secondary", "text-dark")
-       
+
             gameInfo = {
-            
+
                 status: 'AVAILABLE',
                 isAvailable: true,
 
@@ -129,7 +167,7 @@ async function getGameActive(gameId, name=null) {
 
         setStatus(gameId, gameInfo.status)
         return gameInfo;
-        
+
 
     } catch {
         return "Error en el get";
@@ -160,12 +198,12 @@ async function getGame(gameid, gameName) {
     showModal()
 
     const data = await getGameActive(gameid)
- 
-    
-   if (data.status == 'AVAILABLE') {
-    document.getElementById('gameInfo').innerHTML = ''
-     
-       myModal= document.getElementById('modalButtons').innerHTML = `
+
+
+    if (data.status == 'AVAILABLE') {
+        document.getElementById('gameInfo').innerHTML = ''
+
+        myModal = document.getElementById('modalButtons').innerHTML = `
 
        <div class="row">
        <div class="col">
@@ -179,7 +217,7 @@ async function getGame(gameid, gameName) {
        
 `;
 
-       document.getElementById('gameName').innerHTML = `
+        document.getElementById('gameName').innerHTML = `
         
        <div>
        <p class=" fw-bold text-uppercase" style="font-size: 3.50rem"> Table ${gameName} <span class= "text-success"> ${data.status} </span> </p>
@@ -195,7 +233,7 @@ async function getGame(gameid, gameName) {
        `
 
     } if (data.status == 'ON HOLD') {
-        
+
 
         document.getElementById('gameInfo').innerHTML = `
         
@@ -266,7 +304,7 @@ async function getGame(gameid, gameName) {
        
         
         `
- 
+
     } if (data.status == 'TAKEN') {
         myModal = document.getElementById('modalButtons').innerHTML = `
         <a class= "btn btn-lg text-uppercase bg-warning text-decoration-none text-dark fw-bold py-2 px-5 mx-4 rounded-3" href="javascript:holdGame('${gameid}') "> Hold </a>
@@ -274,7 +312,7 @@ async function getGame(gameid, gameName) {
          <a class= "btn btn-lg text-uppercase bg-danger text-decoration-none text-white py-2 px-5 m-2 rounded-3" href="javascript:closeGame('${gameid}') "> Stop </a>
          
          `
-         document.getElementById('gameName').innerHTML = `
+        document.getElementById('gameName').innerHTML = `
         
          <div>
     
@@ -289,7 +327,7 @@ async function getGame(gameid, gameName) {
          `
 
 
-         document.getElementById('gameInfo').innerHTML = `
+        document.getElementById('gameInfo').innerHTML = `
          
          <div class="row">
         <div class="col-6">
@@ -322,12 +360,11 @@ async function getGame(gameid, gameName) {
          
          
         `;
- 
- 
+
+
     }
 
-    if (showModal() == true)
-    {
+    if (showModal() == true) {
         hideModal()
 
     }
@@ -429,9 +466,9 @@ function changeHoldColor(gameid, gameName) {
 
 function changeHoldColor2(gameid, gameName, bgColor, textColor) {
     const myDiv = document.getElementById(gameid)
-    const text = document.getElementById('link_container_'+gameName)
+    const text = document.getElementById('link_container_' + gameName)
 
- 
+
     // Remove the class
     myDiv.classList.remove("bg-body-secondary");
 
@@ -443,7 +480,7 @@ function changeHoldColor2(gameid, gameName, bgColor, textColor) {
 
     // Add the new class
     text.classList.add(textColor);
-    
+
 
 
 }
@@ -535,7 +572,7 @@ async function holdGame(gameId) {
         const response = await getRequest(`${URL}/hold-game`, `POST`, bodyInfo);
         data = await response.json();
         getGameActive(gameId)
-     
+
 
         return console.log(data);
 
@@ -554,7 +591,7 @@ async function resumeGame(gameId) {
         const response = await getRequest(`${URL}/resume-game`, `POST`, bodyInfo);
         data = await response.json();
         getGameActive(gameId)
-  
+
 
         return console.log(data);
 
