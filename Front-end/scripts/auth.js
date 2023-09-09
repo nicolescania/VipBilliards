@@ -32,6 +32,8 @@ loginForm.addEventListener('submit', async (e) => {
     
     Object.values(data).forEach(user => {
       localStorage.setItem('location', user.location._id)
+      localStorage.setItem('branch', user.location.name)
+
 
     });
 

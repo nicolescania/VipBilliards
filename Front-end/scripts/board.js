@@ -19,14 +19,15 @@ async function displayGameList() {
     games = await getGameList()
 
     const storedLocation = localStorage.getItem("location");
-    console.log(storedLocation);
+    const storageBranch = localStorage.getItem("branch")
+    console.log(storageBranch);
 
 
     const location = games.filter(game => game.location === storedLocation);
 
     console.log(location)
     location.forEach(locationGame => {
-        return layaoutLocation("col-4 mb-2", locationGame._id, locationGame.name)
+        return layaoutLocation("col-md-4 mb-2 px-5 my-2", locationGame._id, locationGame.name, storageBranch)
 
 
     })
@@ -80,17 +81,24 @@ function setStatus(gameId, statusName) {
     pStatus[0].innerHTML = statusName
 
 }
+//style="font-size: 2.0rem">
 
 
-
-async function layaoutLocation(cardClassList, gameid, gameName) {
+async function layaoutLocation(cardClassList, gameid, gameName, storageBranch) {
     const row = document.getElementById('row');
+
     card = document.createElement('div');
     card.classList = cardClassList;
 
+    document.getElementById('branchName').innerHTML = `      
+    <div>
+    <p class=" fw-bold text-uppercase text-center h2 pb-2">  management system | ${storageBranch} branch  </p>
+  </div>
+    `
+
     card.innerHTML = `      
-    <div class="card bg-body-secondary text-center  " id= '${gameid}'> 
-    <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0" style="font-size: 6.25rem"  id= 'link_container_${gameid}' href="javascript:getGame('${gameid}', '${gameName}') "> ${gameName}   </a>
+    <div class="card bg-body-secondary text-center py-5" id= '${gameid}'> 
+    <a  class="text-decoration-none text-dark  fw-bold gamesNumbers text-center card-texttiene px-0  display-1"  id= 'link_container_${gameid}' href="javascript:getGame('${gameid}', '${gameName}') "> ${gameName}   </a>
     <p class="${gameid}"> </p>
     
     
@@ -184,9 +192,20 @@ function showModal() {
 }
 
 function hideModal() {
-    var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
 
-    modal.hide();
+    // Get a reference to the modal element by its ID
+    let modal = document.getElementById('exampleModal');
+
+    // Hide the modal by removing the "show" class and setting the "display" style to "none"
+    modal.classList.remove('show');
+    modal.style.display = 'none';
+
+    // Optionally, remove the modal-backdrop if it exists
+    var backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+
 }
 
 //
@@ -207,9 +226,9 @@ async function getGame(gameid, gameName) {
 
        <div class="row">
        <div class="col">
-       <a class= "bg-success text-uppercase text-decoration-none text-white fw-bold py-2 px-5 m-2 rounded-3" href="javascript:startGameByMinute('${gameid}') "> Start (Min) </a>
+       <a class= "bg-success text-uppercase text-decoration-none text-white  fw-bold py-2 px-2 m-2 rounded-3" href="javascript:startGameByMinute('${gameid}') "> Start (Min) </a>
        <a class= "bg-success text-uppercase text-decoration-none text-white fw-bold py-2 px-5 m-2 rounded-3" href="javascript:startGame('${gameid}') "> Start </a>
-
+        
 
        </div>
  
@@ -221,11 +240,6 @@ async function getGame(gameid, gameName) {
         
        <div>
        <p class=" fw-bold text-uppercase" style="font-size: 3.50rem"> Table ${gameName} <span class= "text-success"> ${data.status} </span> </p>
-
-    
-   
-   
-     
      </div>
        
   
@@ -364,10 +378,9 @@ async function getGame(gameid, gameName) {
 
     }
 
-    if (showModal() == true) {
-        hideModal()
 
-    }
+
+
 
 
 
@@ -408,60 +421,12 @@ async function TransferModal(gameid) {
 
     });
     document.getElementById('transferGameModal').innerHTML = `<a href="javascript:transferGame('${gameid}') "> Transfer </a>`;
-
-}
-
-
-
-
-// CHANGE GAME COLOR
-
-function changeColor(gameid, gameName) {
-
-    const myDiv = document.getElementById(gameid)
-    const text = document.getElementById(gameName)
-
-
-
-    // Remove the class
-    myDiv.classList.remove("bg-body-secondary");
-
-    // Add the new class
-    myDiv.classList.add("bg-info");
-
-    // Remove the class
-    text.classList.remove("text-dark");
-
-    // Add the new class
-    text.classList.add("text-white");
-
-
-
-
+    hideModal()
 
 
 }
 
 
-function changeHoldColor(gameid, gameName) {
-    const myDiv = document.getElementById(gameid)
-    const text = document.getElementById(gameName)
-
-
-    // Remove the class
-    myDiv.classList.remove("bg-body-secondary");
-
-    // Add the new class
-    myDiv.classList.add("bg-warning");
-
-    // Remove the class
-    text.classList.remove("text-white");
-
-    // Add the new class
-    text.classList.add("text-dark");
-
-
-}
 
 
 function changeHoldColor2(gameid, gameName, bgColor, textColor) {
@@ -470,13 +435,15 @@ function changeHoldColor2(gameid, gameName, bgColor, textColor) {
 
 
     // Remove the class
-    myDiv.classList.remove("bg-body-secondary");
+    //myDiv.classList.remove("bg-body-secondary");
+    myDiv.className = `card text-center py-2  ${bgColor}`;
 
-    // Add the new class
-    myDiv.classList.add(bgColor);
+
 
     // Remove the class
     text.classList.remove("text-dark");
+    text.classList.remove("text-white");
+
 
     // Add the new class
     text.classList.add(textColor);
@@ -495,8 +462,10 @@ async function startGame(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
+        hideModal()
 
         return console.log(data);
+
 
     } catch {
 
@@ -509,10 +478,11 @@ async function startGameByMinute(gameId) {
     try {
 
         bodyInfo = { 'gameId': gameId }
-        const response = await getRequest(`${URL}/game/start-game-by-minute`, `POST`, bodyInfo);
+        const response = await getRequest(`${URL}/game/start-game-by-minute`, `post`, bodyInfo);
         data = await response.json();
 
         getGameActive(gameId)
+        hideModal()
 
         return console.log(data);
 
@@ -533,6 +503,7 @@ async function closeGame(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
+        hideModal()
 
         return console.log(data);
 
@@ -552,6 +523,7 @@ async function closeFreeGame(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
+        hideModal()
 
         return console.log(data);
 
@@ -572,6 +544,7 @@ async function holdGame(gameId) {
         const response = await getRequest(`${URL}/hold-game`, `POST`, bodyInfo);
         data = await response.json();
         getGameActive(gameId)
+        hideModal()
 
 
         return console.log(data);
@@ -591,6 +564,7 @@ async function resumeGame(gameId) {
         const response = await getRequest(`${URL}/resume-game`, `POST`, bodyInfo);
         data = await response.json();
         getGameActive(gameId)
+        hideModal()
 
 
         return console.log(data);
@@ -611,8 +585,10 @@ async function transferGame(gameIdOld) {
         bodyInfo = { 'gameId01': gameIdOld, 'gameId02': gameIdNew }
         const response = await getRequest(`${URL}/game/transfer-game`, `POST`, bodyInfo);
         data = await response.json();
+        getGameActive(gameIdOld)
 
         getGameActive(gameIdNew)
+        hideModal()
 
         return console.log(data);
 
@@ -623,16 +599,6 @@ async function transferGame(gameIdOld) {
 }
 
 
-
-
-
-
-// // Assuming you have an HTML element with an ID
-// let refreshButton = document.getElementById("mainContainer");
-
-// refreshButton.addEventListener("click", function() {
-//     location.reload(); // Reload the page
-// });
 
 
 
