@@ -2,7 +2,6 @@
 
 
 async function getUserList() {
-  //const response = await getRequest(`${URL}/user/list`, `get`, null);
 
   response = await getRequest(`${URL}/user/list`, `GET`);
   data = await response.json();
@@ -52,19 +51,12 @@ loginForm.addEventListener('submit', async (e) => {
       const storedToken = localStorage.getItem("token");
 
       // Print local storage
-     // console.log("Stored Email:", storedEmail);
-     /// console.log("Stored Token:", storedToken);
+     console.log("Stored Email:", storedEmail);
+     console.log("Stored Token:", storedToken);
 
       //alert('Login successful!');
 
-      let peanutPlaza = '64f3c4f621bef0587507ae22'
-      let danforth = '64f3c50a21bef0587507ae24'
-      let college = '64f3c4cb21bef0587507ae20'
-
       window.location.href = "http://127.0.0.1:5500/Front-end/views/board.html";
-
-    
-
 
       // Redirect to a new page after successful login
     } else {

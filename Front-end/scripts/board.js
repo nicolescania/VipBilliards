@@ -20,59 +20,26 @@ async function displayGameList() {
 
     const storedLocation = localStorage.getItem("location");
     const storageBranch = localStorage.getItem("branch")
-    console.log(storageBranch);
 
 
-    const location = games.filter(game => game.location === storedLocation);
+    
 
-    console.log(location)
+
+    const location = games.filter(game => game.location._id === storedLocation);
+
+
+
+  
     location.forEach(locationGame => {
+
+    
+
         return layaoutLocation("col-md-4 mb-2 px-5 my-2", locationGame._id, locationGame.name, storageBranch)
 
 
     })
 
 
-
-
-
-    // if (storedLocation == 'Peanut Plaza') {
-
-    //     const peanutPlaza = games.filter(game => game.location === 'peaunutPlaza');
-    //     peanutPlaza.forEach(peanutPlazaGame => {
-    //         return layaoutLocation("col-4 mb-2", peanutPlazaGame._id, peanutPlazaGame.name)
-
-
-    //     })
-    // } if (storedLocation == 'Danforth') {
-    //     const danforth = games.filter(game => game.location === '64f3c50a21bef0587507ae24');
-    //     danforth.forEach(danforthGame => {
-    //         console.log(danforthGame)
-    //         return layaoutLocation("col-3 mb-2", danforthGame._id, danforthGame.name)
-
-
-    //     })
-
-
-    // } if (storedLocation == 'college') {
-
-    //     const college = games.filter(game => game.location === '64f3c4cb21bef0587507ae20');
-    //     college.forEach(collegeGame => {
-    //         return layaoutLocation("col-4 mb-2", collegeGame._id, collegeGame.name)
-
-    //     })
-
-
-
-    // }
-
-
-    //verifyGameActive(game._id)
-
-    // setStatus(game._id, data.status )
-
-
-    // });
 }
 
 function setStatus(gameId, statusName) {
@@ -81,8 +48,6 @@ function setStatus(gameId, statusName) {
     pStatus[0].innerHTML = statusName
 
 }
-//style="font-size: 2.0rem">
-
 
 async function layaoutLocation(cardClassList, gameid, gameName, storageBranch) {
     const row = document.getElementById('row');
@@ -191,10 +156,10 @@ function showModal() {
 
 }
 
-function hideModal() {
+function hideModal(modalHide) {
 
     // Get a reference to the modal element by its ID
-    let modal = document.getElementById('exampleModal');
+    let modal = document.getElementById(modalHide);
 
     // Hide the modal by removing the "show" class and setting the "display" style to "none"
     modal.classList.remove('show');
@@ -420,8 +385,11 @@ async function TransferModal(gameid) {
 
 
     });
-    document.getElementById('transferGameModal').innerHTML = `<a href="javascript:transferGame('${gameid}') "> Transfer </a>`;
-    hideModal()
+
+    hideModal("exampleModal")
+
+    document.getElementById('transferButton').innerHTML = `<a class= "btn btn-lg text-uppercase bg-dark-subtle text-decoration-none text-dark fw-bold py-2 px-5 m-2 rounded-3" href="javascript:transferGame('${gameid}') "> Transfer </a> `;
+  
 
 
 }
@@ -462,7 +430,8 @@ async function startGame(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
-        hideModal()
+        hideModal("exampleModal")
+
 
         return console.log(data);
 
@@ -482,7 +451,8 @@ async function startGameByMinute(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
-        hideModal()
+        hideModal("exampleModal")
+
 
         return console.log(data);
 
@@ -503,7 +473,8 @@ async function closeGame(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
-        hideModal()
+        hideModal("exampleModal")
+
 
         return console.log(data);
 
@@ -523,7 +494,8 @@ async function closeFreeGame(gameId) {
         data = await response.json();
 
         getGameActive(gameId)
-        hideModal()
+        hideModal("exampleModal")
+
 
         return console.log(data);
 
@@ -544,7 +516,8 @@ async function holdGame(gameId) {
         const response = await getRequest(`${URL}/hold-game`, `POST`, bodyInfo);
         data = await response.json();
         getGameActive(gameId)
-        hideModal()
+        hideModal("exampleModal")
+
 
 
         return console.log(data);
@@ -564,7 +537,8 @@ async function resumeGame(gameId) {
         const response = await getRequest(`${URL}/resume-game`, `POST`, bodyInfo);
         data = await response.json();
         getGameActive(gameId)
-        hideModal()
+        hideModal("exampleModal")
+
 
 
         return console.log(data);
@@ -588,8 +562,7 @@ async function transferGame(gameIdOld) {
         getGameActive(gameIdOld)
 
         getGameActive(gameIdNew)
-        hideModal()
-
+        hideModal("transfermodal02")
         return console.log(data);
 
     } catch {
