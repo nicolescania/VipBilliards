@@ -33,3 +33,8 @@
     color:  #15b790 !important;;
 
 }
+
+
+.opacity50 {
+    opacity: 0.5; /* 50% opacity */
+  }

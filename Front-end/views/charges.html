@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,54 +8,53 @@
     <link rel="stylesheet" href="../assets/css/css.css">
     <title>Charges</title>
 </head>
+
 <body>
-    
 
     <div class="container">
 
         <img class="mx-auto d-block my-2 py-2 " src="../assets/images/logo-web.png" alt="">
         <!-- <div id="branchName"></div> -->
-
+        <div id="branchNameChargeView"></div>
         <table class="table table-striped">
             <thead class="table-dark">
                 <tr>
-                 
-    
+                    <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Duration</th>
-               
-                   
+                    <th scope="col">Duration Time</th>
+
                 </tr>
             </thead>
 
-
             <tbody id="chargeList">
                 <!-- Repeatable Rows -->
-          
-                    <!-- Create a new Table Row-->
-               
-    
-                 <tr id="tr">
-                   
-                
-    
-                 </tr>
-                  
-                 
-        
-          
+
+                <!-- Create a new Table Row-->
+                <tr id="tr">
+                </tr>
+
+            <tfoot id="totalCharge">
+
+                <!-- <tr>
+                        <th>Total Charge</th>
+                     <td id="totalGameCharge"  colspan="3">000</td>
+                    </tr> -->
+            </tfoot>
+
+
             </tbody>
-          </table>
-    
+        </table>
+
     </div>
 
 
 
-    
-  <script src="../scripts/main.js"></script>
-  <script src="../scripts/bootstrap.min.js"></script>
-  <!-- <script src="../scripts/auth.js"></script> -->
-  <script src="../scripts/charges.js"></script>
+
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/bootstrap.min.js"></script>
+    <!-- <script src="../scripts/auth.js"></script> -->
+    <script src="../scripts/charges.js"></script>
 </body>
+
 </html>
