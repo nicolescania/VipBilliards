@@ -1,4 +1,4 @@
-const URL = 'http://localhost:5000/api';
+const URL = 'https://vipbilliardsapi.onrender.com/api';
 
 
 

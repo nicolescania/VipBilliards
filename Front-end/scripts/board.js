@@ -150,7 +150,15 @@ async function getGameActive(gameId, name = null) {
 
 
 function showModal() {
+
+    
+    loading = document.getElementById('loading')
+    loading.style.visibility = "visibility";
+  
     var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
+    document.getElementById('gameInfo').innerHTML = ''
+    myModal = document.getElementById('modalButtons').innerHTML = ''
+    document.getElementById('gameName').innerHTML = ''
     modal.show();
 
 }
@@ -177,14 +185,24 @@ function hideModal(modalHide) {
 
 // GET THE GAME STARTED 
 async function getGame(gameid, gameName) {
+  
+    loading = document.getElementById('loading')
+    loading.style.display = "block";
+
 
     showModal()
 
     const data = await getGameActive(gameid)
 
+ 
+    //loading.style.display = "none";
 
     if (data.status == 'AVAILABLE') {
+        loading = document.getElementById('loading')
+        loading.style.display = "none";
         document.getElementById('gameInfo').innerHTML = ''
+        myModal = document.getElementById('modalButtons').innerHTML = ''
+        document.getElementById('gameName').innerHTML = ''
 
         myModal = document.getElementById('modalButtons').innerHTML = `
 
@@ -211,7 +229,12 @@ async function getGame(gameid, gameName) {
        `
 
     } if (data.status == 'ON HOLD') {
+        loading = document.getElementById('loading')
+        loading.style.display = "none";
 
+        document.getElementById('gameInfo').innerHTML = ''
+        myModal = document.getElementById('modalButtons').innerHTML = ''
+        document.getElementById('gameName').innerHTML = ''
 
         document.getElementById('gameInfo').innerHTML = `
         
@@ -284,6 +307,12 @@ async function getGame(gameid, gameName) {
         `
 
     } if (data.status == 'TAKEN') {
+        loading = document.getElementById('loading')
+        loading.style.display = "none";
+        document.getElementById('gameInfo').innerHTML = ''
+        myModal = document.getElementById('modalButtons').innerHTML = ''
+        document.getElementById('gameName').innerHTML = ''
+
         myModal = document.getElementById('modalButtons').innerHTML = `
         <a class= "btn btn-lg text-uppercase bg-warning text-decoration-none text-dark fw-bold py-2 px-5 mx-4 rounded-3" href="javascript:holdGame('${gameid}') "> Hold </a>
         <a class= "btn btn-lg text-uppercase bg-dark-subtle text-decoration-none text-dark fw-bold py-2 px-5 m-2 rounded-3" href="javascript:TransferModal('${gameid}') "> Transfer </a>
@@ -355,6 +384,8 @@ async function getGame(gameid, gameName) {
 
 
 function showStartButton(gameid) {
+    loading = document.getElementById('loading')
+    loading.style.display = "none";
     document.getElementById('startGameModal').innerHTML = `<a href="javascript:startGame('${gameid}') "> Start </a>`;
 
 }
@@ -362,8 +393,9 @@ function showStartButton(gameid) {
 
 
 async function TransferModal(gameid) {
-
-
+    secondLoading = document.getElementById('secondLoading')
+    secondLoading.style.display = "block";
+  
 
     var modal = new bootstrap.Modal(document.getElementById("transfermodal02"));
     modal.show();
@@ -372,9 +404,11 @@ async function TransferModal(gameid) {
     const select = document.getElementById('menuSelectionGames');
     select.innerHTML = ''
     games.forEach(async (game) => {
+        
 
         const data = await getGameActive(game._id)
         if (data.isAvailable == true) {
+            secondLoading.style.display = "none";
             let gameName = game.name
             console.log(game)
             select.innerHTML = select.innerHTML + `<option value="${game._id}">${gameName}</option>`;
