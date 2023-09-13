@@ -13,6 +13,8 @@ async function getGameList() {
 
 
 
+
+
 // DISPLAY ALL THE GAMES IN THE SCREEN
 async function displayGameList() {
 
@@ -23,18 +25,15 @@ async function displayGameList() {
 
 
     
-
+console.log(storedLocation)
 
     const location = games.filter(game => game.location._id === storedLocation);
-
-
-
   
     location.forEach(locationGame => {
 
     
 
-        return layaoutLocation("col-md-4 mb-2 px-5 my-2", locationGame._id, locationGame.name, storageBranch)
+        return layaoutLocation(locationGame.location.layout, locationGame._id, locationGame.name, storageBranch)
 
 
     })
@@ -57,7 +56,7 @@ async function layaoutLocation(cardClassList, gameid, gameName, storageBranch) {
 
     document.getElementById('branchName').innerHTML = `      
     <div>
-    <p class=" fw-bold text-uppercase text-center h2 pb-2">  management system | ${storageBranch} branch  </p>
+    <p class=" fw-bold text-uppercase text-center h2 pb-2 mb-2">  management system | ${storageBranch} branch  </p>
   </div>
     `
 

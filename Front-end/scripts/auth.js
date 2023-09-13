@@ -28,16 +28,17 @@ loginForm.addEventListener('submit', async (e) => {
 
     data = await response.json();
 
-    
-    Object.values(data).forEach(user => {
-      localStorage.setItem('location', user.location._id)
-      localStorage.setItem('branch', user.location.name)
+  
+
+    const location = data.user.location._id
+    const branch = data.user.location.name
+    const layout = data.user.location.layout
+  
+  
 
 
-    });
 
-
-   // console.log(data);
+    //console.log(data);
 
     if (response.ok) {
       // Store the token in local storage or a cookie for future API requests
@@ -45,14 +46,24 @@ loginForm.addEventListener('submit', async (e) => {
       // Save email and token to local storage
       localStorage.setItem('emailAddress', email);
       localStorage.setItem('token', token);
+      localStorage.setItem('location', location)
+      localStorage.setItem('branch', branch)
+      localStorage.setItem('layout', layout)
+
+     
 
       // Retrieve data from local storage
       const storedEmail = localStorage.getItem("emailAddress");
       const storedToken = localStorage.getItem("token");
+  
+
+ 
 
       // Print local storage
      console.log("Stored Email:", storedEmail);
      console.log("Stored Token:", storedToken);
+
+
 
       //alert('Login successful!');
 
