@@ -67,7 +67,7 @@ loginForm.addEventListener('submit', async (e) => {
 
       //alert('Login successful!');
 
-      window.location.href = "/board/Front-end/views/board.html";
+      window.location.href = "/board/views/board.html";
 
       // Redirect to a new page after successful login
     } else {

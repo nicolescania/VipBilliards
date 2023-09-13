@@ -1,0 +1,41 @@
+@import url('bootstrap.min.css');
+
+
+.bg-info{
+    background: #2797bf !important;
+}
+
+.bg-warning{
+    background: #fff200 !important;
+}
+
+.bg-danger{
+    background: #ff4d4d !important;
+}
+
+.bg-body-secondary{
+    background: #ededed !important;
+}
+
+.text-warning{
+    color:  #c4bb0a !important;;
+}
+
+.text-info{
+    color:  #2797bf !important;
+}
+.bg-success,.btn-success {
+    background: #15b790 !important;
+
+}
+
+.text-success{
+    color:  #15b790 !important;;
+
+}
+
+
+.opacity50 {
+    opacity: 0.5; /* 50% opacity */
+  }
+
