@@ -180,7 +180,7 @@ function hideModal(modalHide) {
 
 }
 
-//
+
 
 
 // GET THE GAME STARTED 
@@ -309,6 +309,8 @@ async function getGame(gameid, gameName) {
         `
 
     } if (data.status == 'TAKEN') {
+
+        console.log(data.timeStarted)
         loading = document.getElementById('loading')
         loading.style.display = "none";
         document.getElementById('gameInfo').innerHTML = ''
@@ -620,3 +622,15 @@ async function transferGame(gameIdOld) {
 
 
 
+function updateTimestampsToChinaTime() {
+    const timestampElements = document.querySelectorAll('.timestamp');
+    
+    timestampElements.forEach(element => {
+        const timestamp = element.getAttribute('data-timestamp');
+        const chinaTime = convertToChinaTime(timestamp);
+        element.textContent = `Timestamp (China): ${chinaTime.toLocaleString()}`;
+    });
+}
+
+// Run the updateTimestampsToChinaTime function when the page loads
+window.addEventListener('DOMContentLoaded', updateTimestampsToChinaTime);
